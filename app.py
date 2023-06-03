@@ -12,7 +12,7 @@ images = [
 @app.route('/')
 def index():
     url = random.choice(images)
-    return ('index.html', url=url)
+    return 'index.html', url=url
 
 if __name__ == "__master__":
     app.run(host="0.0.0.0")
