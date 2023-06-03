@@ -1,0 +1,34 @@
+pipeline {
+    agent any 
+    stages {
+        stage ('code checkout from git hub') {
+            steps {
+                git credentialsId: 'new-cred2', url: 'https://github.com/devopsbyarun/jenkins-ecr.git'
+            }
+        }
+        stage ('build and test the code') {
+            steps {
+                sh 'docker build -t devopsbyarun/jenkisecr .'
+            }
+        }
+        stage ('pushing docker image to docker hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', passwordVariable: 'passwd', usernameVariable: 'dockerhub-username')]) {
+               sh "docker login -u devopsbyarun -p ${passwd}"
+               sh 'docker push devopsbyarun/jenkisecr'
+               }
+            }
+        }
+        stage ('deploy to localhost') {
+            steps {
+                sh ''' 
+                   #!/bin/bash
+                   docker stop app-v1 || true
+                   docker rm app-v1 || true
+                   docker run --name=app-v1 -p  8096:5000 -itd devopsbyarun/jenkisecr
+                   '''
+            }
+        }
+        
+    }
+}
