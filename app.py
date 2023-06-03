@@ -1,4 +1,4 @@
-from flask import Flask, 
+from flask import Flask, render_template
 import random
 
 app = Flask(__name__)
@@ -12,7 +12,7 @@ images = [
 @app.route('/')
 def index():
     url = random.choice(images)
-    return 'index.html', url=url
+    return render_template('index.html', url=url)
 
-if __name__ == "__master__":
+if __name__ == "__main__":
     app.run(host="0.0.0.0")
