@@ -1,0 +1,30 @@
+pipeline {
+    agent any 
+    stages {
+        stage ('code checkout from git hub') {
+            steps {
+                git credentialsId: 'new-cred2', url: 'https://github.com/devopsbyarun/jenkins-ecr.git'
+            }
+        }
+        stage ('build and test the code') {
+            steps {
+                sh 'docker build -t devopsbyarun/jenkisecr .'
+            }
+        }
+        stage ('pushing docker image to docker hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'docker-cred', passwordVariable: 'passwd', usernameVariable: 'dockerhub-username')]) {
+               sh "docker login -u devopsbyarun -p ${passwd}"
+               sh 'docker push devopsbyarun/jenkisecr'
+               }
+            }
+        }
+        stage ('deploy on k8') {
+            steps {
+                withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'kubernetes', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+                 sh 'kubectl apply -f deployment.yml'
+                }
+            }
+        }
+    }
+}
