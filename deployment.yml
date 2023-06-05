@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: LoadBalancer-svc
+  name: loadlalancer-svc
 spec:
   type: LoadBalancer
   selector:
@@ -14,7 +14,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: LoadBalancer-pod
+  name: loadbalancer-pod
 spec:
   replicas: 3
   selector:
