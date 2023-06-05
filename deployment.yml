@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  name: LoadBalancer-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: Arun
+  ports:
+    - name: flask
+      protocol: TCP
+      port: 5000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: LoadBalancer-pod
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: arun
+  template:
+    metadata:
+      labels:
+        app: arun
+    spec:
+      containers:
+      - name: arun
+        image: devopsbyarun/jenkisecr
+        ports:
+          - port: 8096
+            targetPort: 5000 
+
